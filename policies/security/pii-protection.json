@@ -1,0 +1,60 @@
+{
+  "name": "PII Data Protection",
+  "description": "Detects and controls access to personally identifiable information (PII) including SSN, credit cards, and email addresses in queries and API calls.",
+  "priority": 95,
+  "enabled": true,
+  "rules": [
+    {
+      "id": "block-ssn-access",
+      "actionType": "db_query",
+      "targetPattern": ".*",
+      "conditions": [
+        {
+          "field": "params.query",
+          "operator": "matches",
+          "value": "(?i)(ssn|social_security|social_security_number)"
+        }
+      ],
+      "effect": "REQUIRE_APPROVAL"
+    },
+    {
+      "id": "block-credit-card-query",
+      "actionType": "db_query",
+      "targetPattern": ".*",
+      "conditions": [
+        {
+          "field": "params.query",
+          "operator": "matches",
+          "value": "(?i)(credit_card|card_number|cvv|expiry)"
+        }
+      ],
+      "effect": "BLOCK"
+    },
+    {
+      "id": "detect-bulk-email-export",
+      "actionType": "db_query",
+      "targetPattern": ".*",
+      "conditions": [
+        {
+          "field": "params.query",
+          "operator": "matches",
+          "value": "(?i)SELECT.*email.*FROM.*LIMIT\\s+(\\d{3,}|\\*)"
+        }
+      ],
+      "effect": "REQUIRE_APPROVAL"
+    },
+    {
+      "id": "block-password-access",
+      "actionType": "db_query",
+      "targetPattern": ".*",
+      "conditions": [
+        {
+          "field": "params.query",
+          "operator": "matches",
+          "value": "(?i)SELECT.*(password|passwd|pwd|hash).*FROM"
+        }
+      ],
+      "effect": "BLOCK"
+    }
+  ]
+}

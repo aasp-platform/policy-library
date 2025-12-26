@@ -1,0 +1,49 @@
+{
+  "name": "File System Protection",
+  "description": "Controls file system access to prevent data exfiltration and unauthorized modifications. Blocks access to sensitive directories and file types.",
+  "priority": 85,
+  "enabled": true,
+  "rules": [
+    {
+      "id": "block-env-files",
+      "actionType": "file_access",
+      "targetPattern": ".*\\.env.*",
+      "conditions": [],
+      "effect": "BLOCK"
+    },
+    {
+      "id": "block-ssh-keys",
+      "actionType": "file_access",
+      "targetPattern": ".*\\.ssh/.*",
+      "conditions": [],
+      "effect": "BLOCK"
+    },
+    {
+      "id": "block-credentials",
+      "actionType": "file_access",
+      "targetPattern": ".*(credentials|secrets|passwords).*\\.(json|yaml|yml|txt)",
+      "conditions": [],
+      "effect": "BLOCK"
+    },
+    {
+      "id": "approve-config-changes",
+      "actionType": "file_access",
+      "targetPattern": ".*/config/.*",
+      "conditions": [
+        {
+          "field": "params.operation",
+          "operator": "eq",
+          "value": "write"
+        }
+      ],
+      "effect": "REQUIRE_APPROVAL"
+    },
+    {
+      "id": "block-system-files",
+      "actionType": "file_access",
+      "targetPattern": "^/(etc|var/log|root)/.*",
+      "conditions": [],
+      "effect": "BLOCK"
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "name": "SQL Injection Prevention",
+  "description": "Blocks dangerous SQL operations that could lead to data loss or unauthorized access. Includes protection against DROP, TRUNCATE, DELETE without WHERE, and other destructive operations.",
+  "priority": 100,
+  "enabled": true,
+  "rules": [
+    {
+      "id": "block-drop-table",
+      "actionType": "db_query",
+      "targetPattern": ".*",
+      "conditions": [
+        {
+          "field": "params.query",
+          "operator": "matches",
+          "value": "(?i)DROP\\s+(TABLE|DATABASE|INDEX)"
+        }
+      ],
+      "effect": "BLOCK"
+    },
+    {
+      "id": "block-truncate",
+      "actionType": "db_query",
+      "targetPattern": ".*",
+      "conditions": [
+        {
+          "field": "params.query",
+          "operator": "matches",
+          "value": "(?i)TRUNCATE\\s+TABLE"
+        }
+      ],
+      "effect": "BLOCK"
+    },
+    {
+      "id": "block-delete-all",
+      "actionType": "db_query",
+      "targetPattern": ".*",
+      "conditions": [
+        {
+          "field": "params.query",
+          "operator": "matches",
+          "value": "(?i)DELETE\\s+FROM\\s+\\w+\\s*$"
+        }
+      ],
+      "effect": "BLOCK"
+    },
+    {
+      "id": "block-alter-table",
+      "actionType": "db_query",
+      "targetPattern": ".*",
+      "conditions": [
+        {
+          "field": "params.query",
+          "operator": "matches",
+          "value": "(?i)ALTER\\s+TABLE"
+        }
+      ],
+      "effect": "REQUIRE_APPROVAL"
+    },
+    {
+      "id": "block-union-injection",
+      "actionType": "db_query",
+      "targetPattern": ".*",
+      "conditions": [
+        {
+          "field": "params.query",
+          "operator": "matches",
+          "value": "(?i)UNION\\s+(ALL\\s+)?SELECT"
+        }
+      ],
+      "effect": "BLOCK"
+    }
+  ]
+}

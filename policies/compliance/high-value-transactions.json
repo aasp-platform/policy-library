@@ -1,0 +1,60 @@
+{
+  "name": "High-Value Transaction Control",
+  "description": "Requires human approval for financial transactions above specified thresholds. Essential for PCI-DSS and SOX compliance.",
+  "priority": 90,
+  "enabled": true,
+  "rules": [
+    {
+      "id": "approve-high-value-payment",
+      "actionType": "tool_call",
+      "targetPattern": "(process_payment|charge_card|transfer_funds|send_payment)",
+      "conditions": [
+        {
+          "field": "params.amount",
+          "operator": "gte",
+          "value": 1000
+        }
+      ],
+      "effect": "REQUIRE_APPROVAL"
+    },
+    {
+      "id": "block-very-high-value",
+      "actionType": "tool_call",
+      "targetPattern": "(process_payment|charge_card|transfer_funds|send_payment)",
+      "conditions": [
+        {
+          "field": "params.amount",
+          "operator": "gte",
+          "value": 50000
+        }
+      ],
+      "effect": "BLOCK"
+    },
+    {
+      "id": "approve-refunds",
+      "actionType": "tool_call",
+      "targetPattern": "(process_refund|issue_refund|refund_payment)",
+      "conditions": [
+        {
+          "field": "params.amount",
+          "operator": "gte",
+          "value": 500
+        }
+      ],
+      "effect": "REQUIRE_APPROVAL"
+    },
+    {
+      "id": "approve-international-transfer",
+      "actionType": "tool_call",
+      "targetPattern": "(transfer_funds|send_payment|wire_transfer)",
+      "conditions": [
+        {
+          "field": "params.country",
+          "operator": "neq",
+          "value": "US"
+        }
+      ],
+      "effect": "REQUIRE_APPROVAL"
+    }
+  ]
+}
