@@ -49,13 +49,13 @@ ls policies/security/
 ### 2. Import to AASP
 
 **Via Dashboard:**
-1. Go to [AASP Dashboard](https://aasp-mvp.aminereg.com/dashboard/policies)
+1. Go to [AASP Dashboard](https://app.harbyx.com/dashboard/policies)
 2. Click "Create Policy"
 3. Paste the policy JSON
 
 **Via API:**
 ```bash
-curl -X POST https://aasp-mvp.aminereg.com/api/v1/policies \
+curl -X POST https://app.harbyx.com/api/v1/policies \
   -H "Authorization: Bearer aasp_live_xxx" \
   -H "Content-Type: application/json" \
   -d @policies/security/sql-injection-prevention.json
